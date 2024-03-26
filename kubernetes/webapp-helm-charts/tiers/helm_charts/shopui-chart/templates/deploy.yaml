@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: shopui
+
+spec:
+  selector:
+    matchLabels:
+      app: shopui
+
+  {{- if .Values.deployment.replica_count }}
+  replicas: {{ .Values.deployment.replica_count }}
+  {{- end }}
+  
+  template:
+
+    metadata:
+      labels:
+        app: shopui
+        image_change: ''
+
+    spec:
+      containers:
+      - name: shopui
+        image: devteds/demo-bookstore-shopui:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

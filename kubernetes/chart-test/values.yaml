@@ -1,0 +1,13 @@
+namespace: default
+
+deployment:
+  replica_count: 2
+  image: nginx:latest
+  containerPort: 80
+
+
+service:
+  name: frontend-service
+  type: LoadBalancer
+  port: 80
+  targetPort: 80

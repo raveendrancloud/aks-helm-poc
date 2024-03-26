@@ -1,0 +1,27 @@
+name: Apply MySQL and Ingress Controller Helm Charts
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up kubectl
+      uses: azure/k8s-set-context@v1
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+
+    - name: Add Bitnami Helm repository & Install MySQL
+      run: |
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm install mysql bitnami/mysql --version 10.1.0 --set auth.database=bookstore
+
+    - name: Add NGINX Helm repository & Install NGINX Ingress Controller
+      run: |
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm install my-ingress-nginx ingress-nginx/ingress-nginx --version 4.10.0

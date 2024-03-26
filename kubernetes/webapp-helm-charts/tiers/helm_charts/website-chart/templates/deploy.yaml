@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: website
+
+spec:
+  {{- if .Values.deployment.replica_count }}
+  replicas: {{ .Values.deployment.replica_count }}
+  {{- end }}
+
+  selector:
+    matchLabels:
+      app: website
+
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+      - name: website
+        image: devteds/demo-bookstore-website:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

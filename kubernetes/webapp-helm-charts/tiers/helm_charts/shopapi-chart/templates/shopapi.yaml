@@ -1,0 +1,147 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: shopapi-cm
+
+data:
+  DB_HOST: {{ .Values.database.host }}
+  DB_NAME: {{ .Values.database.db_name }}
+  DB_USER: {{ .Values.database.user }}
+  RAILS_ENV: production
+  RAILS_LOG_TO_STDOUT: "1"
+
+---
+
+apiVersion: v1
+kind: Secret
+
+metadata:
+  name: shopapi-sec
+
+type: Opaque
+
+data:
+  DB_PASSWORD: {{ .Values.database.password }}
+
+---
+
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: shopapi-job-dbc
+  labels:
+    app: shopapi-db
+
+spec:
+  template:
+    metadata:
+      labels:
+        group: shopapi-db
+    spec:
+      containers:
+      - name: shopapi-db
+        image: devteds/demo-bookstore-shopapi:1.0
+        imagePullPolicy: Always
+        command: ["bundle", "exec", "rails", "db:migrate"]
+        volumeMounts:
+        - name: secret-vol
+          mountPath: /app/config/app_secret
+        envFrom:
+        - configMapRef:
+            name: shopapi-cm
+      volumes:
+        - name: secret-vol
+          secret:
+            secretName: shopapi-sec
+      restartPolicy: Never
+  backoffLimit: 4
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopapi
+spec:
+  selector:
+    matchLabels:
+      app: shopapi
+  replicas: {{ .Values.deployment.replica_count }}
+  template:
+    metadata:
+      labels:
+        app: shopapi
+    spec:
+      containers:
+      - name: shopapi
+        image: devteds/demo-bookstore-shopapi:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.deployment.containerPort }}
+        volumeMounts:
+        - name: secret-vol
+          mountPath: /app/config/app_secret        
+        envFrom:
+        - configMapRef:
+            name: shopapi-cm
+      volumes:
+        - name: secret-vol
+          secret:
+            secretName: shopapi-sec
+
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: shopapi
+  labels:
+    app: shopapi
+
+spec:
+  
+  selector:
+    app: shopapi
+
+  ports:
+  - port: {{ .Values.service.port }}
+
+
+---
+
+# ingress
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: # Add host if applicable
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: website
+            port:
+              number: 80
+      - path: /api/books
+        pathType: Prefix
+        backend:
+          service:
+            name: shopapi
+            port:
+              number: 3000
+      - path: /shop
+        pathType: Prefix
+        backend:
+          service:
+            name: shopui
+            port:
+              number: 80
