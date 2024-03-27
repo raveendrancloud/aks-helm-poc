@@ -30,14 +30,14 @@ jobs:
     #     helm upgrade --install <release_name> <chart_directory> --namespace <namespace> -f values.yaml
 
     - name: LS
-      working-directory: ./ 
       run: |
+        cd ./kubernetes/webapp-helm-charts/helm-charts
         ls -la
 
     - name: Check if Helm release exists
       id: check-helm-release
-      working-directory: ./ 
       run: |
+        cd ./kubernetes/webapp-helm-charts/helm-charts
         if helm list -n default | grep -q 'website'; then
           echo "::set-output name=release_exists::true"
         else
@@ -47,17 +47,17 @@ jobs:
         KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
 
     - name: Deploy with Helm
-      working-directory: ./ 
       if: steps.check-helm-release.outputs.release_exists == 'false'
       run: |
-        helm install website ./kubernetes/webapp-helm-charts/helm-charts/website-chart --values ./kubernetes/webapp-helm-charts/envs/prod/website-chart/values.yaml --wait
+        cd ./kubernetes/webapp-helm-charts/helm-charts
+        helm install website ./website-chart --values ../envs/prod/website-chart/values.yaml --wait
       env:
         KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
 
     - name: Upgrade with Helm
-      working-directory: ./ 
       if: steps.check-helm-release.outputs.release_exists == 'true'
       run: |
-        helm upgrade website ./kubernetes/webapp-helm-charts/helm-charts/website-chart --values ./kubernetes/webapp-helm-charts/envs/prod/website-chart/values.yaml --wait
+        cd ./kubernetes/webapp-helm-charts/helm-charts
+        helm upgrade website ./website-chart --values ../envs/prod/website-chart/values.yaml --wait
       env:
         KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
