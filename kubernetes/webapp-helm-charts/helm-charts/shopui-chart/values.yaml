@@ -1,0 +1,9 @@
+environment: default
+
+namespace: default
+
+deployment:
+  replica_count: 2
+
+service:
+  port: 80

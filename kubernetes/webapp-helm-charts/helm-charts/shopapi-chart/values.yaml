@@ -1,0 +1,16 @@
+environment: default
+
+namespace: default
+
+database:
+  host: mysql
+  db_name: bookstore
+  user: root
+  password: "a2FqbDNCdUptbA=="
+
+deployment:
+  replica_count: 1
+  containerPort: 3000
+
+service:
+  port: 3000

@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: shopui
+  name: shopui-{{ .Values.environment }}
 
 spec:
   selector:
     matchLabels:
-      app: shopui
+      app: shopui-{{ .Values.environment }}
 
   {{- if .Values.deployment.replica_count }}
   replicas: {{ .Values.deployment.replica_count }}
@@ -17,12 +17,10 @@ spec:
 
     metadata:
       labels:
-        app: shopui
-        image_change: ''
-
+        app: shopui-{{ .Values.environment }}
     spec:
       containers:
-      - name: shopui
+      - name: shopui-{{ .Values.environment }}
         image: devteds/demo-bookstore-shopui:1.0
         imagePullPolicy: Always
         ports:

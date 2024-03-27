@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: website
+  name: website-{{ .Values.environment }}
 
 spec:
   {{- if .Values.deployment.replica_count }}
@@ -11,15 +11,15 @@ spec:
 
   selector:
     matchLabels:
-      app: website
+      app: website-{{ .Values.environment }}
 
   template:
     metadata:
       labels:
-        app: website
+        app: website-{{ .Values.environment }}
     spec:
       containers:
-      - name: website
+      - name: website-{{ .Values.environment }}
         image: devteds/demo-bookstore-website:1.0
         imagePullPolicy: Always
         ports:

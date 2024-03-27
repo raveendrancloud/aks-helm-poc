@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 
 metadata:
-  name: shopapi-cm
+  name: shopapi-cm-{{ .Values.environment }}
 
 data:
   DB_HOST: {{ .Values.database.host }}
@@ -17,7 +17,7 @@ apiVersion: v1
 kind: Secret
 
 metadata:
-  name: shopapi-sec
+  name: shopapi-sec-{{ .Values.environment }}
 
 type: Opaque
 
@@ -30,31 +30,31 @@ apiVersion: batch/v1
 kind: Job
 
 metadata:
-  name: shopapi-job-dbc
+  name: shopapi-job-dbc-{{ .Values.environment }}
   labels:
-    app: shopapi-db
+    app: shopapi-db-{{ .Values.environment }}
 
 spec:
   template:
     metadata:
       labels:
-        group: shopapi-db
+        group: shopapi-db-{{ .Values.environment }}
     spec:
       containers:
-      - name: shopapi-db
+      - name: shopapi-db-{{ .Values.environment }}
         image: devteds/demo-bookstore-shopapi:1.0
         imagePullPolicy: Always
         command: ["bundle", "exec", "rails", "db:migrate"]
         volumeMounts:
-        - name: secret-vol
+        - name: secret-vol-{{ .Values.environment }}
           mountPath: /app/config/app_secret
         envFrom:
         - configMapRef:
-            name: shopapi-cm
+            name: shopapi-cm-{{ .Values.environment }}
       volumes:
-        - name: secret-vol
+        - name: secret-vol-{{ .Values.environment }}
           secret:
-            secretName: shopapi-sec
+            secretName: shopapi-sec-{{ .Values.environment }}
       restartPolicy: Never
   backoffLimit: 4
 
@@ -63,33 +63,34 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shopapi
+  name: shopapi-{{ .Values.environment }}
 spec:
   selector:
     matchLabels:
-      app: shopapi
+      app: shopapi-{{ .Values.environment }}
   replicas: {{ .Values.deployment.replica_count }}
+
   template:
     metadata:
       labels:
-        app: shopapi
+        app: shopapi-{{ .Values.environment }}
     spec:
       containers:
-      - name: shopapi
+      - name: shopapi-{{ .Values.environment }}
         image: devteds/demo-bookstore-shopapi:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.deployment.containerPort }}
         volumeMounts:
-        - name: secret-vol
+        - name: secret-vol-{{ .Values.environment }}
           mountPath: /app/config/app_secret        
         envFrom:
         - configMapRef:
-            name: shopapi-cm
+            name: shopapi-cm-{{ .Values.environment }}
       volumes:
-        - name: secret-vol
+        - name: secret-vol-{{ .Values.environment }}
           secret:
-            secretName: shopapi-sec
+            secretName: shopapi-sec-{{ .Values.environment }}
 
 ---
 
@@ -97,14 +98,14 @@ apiVersion: v1
 kind: Service
 
 metadata:
-  name: shopapi
+  name: shopapi-{{ .Values.environment }}
   labels:
-    app: shopapi
+    app: shopapi-{{ .Values.environment }}
 
 spec:
   
   selector:
-    app: shopapi
+    app: shopapi-{{ .Values.environment }}
 
   ports:
   - port: {{ .Values.service.port }}
@@ -117,7 +118,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-ingress
+  name: nginx-ingress-{{ .Values.environment }}
 spec:
   ingressClassName: nginx
   rules:
@@ -128,20 +129,20 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: website
+            name: website-{{ .Values.environment }}
             port:
               number: 80
       - path: /api/books
         pathType: Prefix
         backend:
           service:
-            name: shopapi
+            name: shopapi-{{ .Values.environment }}
             port:
               number: 3000
       - path: /shop
         pathType: Prefix
         backend:
           service:
-            name: shopui
+            name: shopui-{{ .Values.environment }}
             port:
               number: 80

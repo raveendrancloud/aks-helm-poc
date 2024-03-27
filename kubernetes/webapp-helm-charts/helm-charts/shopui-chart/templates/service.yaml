@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: shopui-{{ .Values.environment }}
+  labels:
+    app: shopui-{{ .Values.environment }}
+
+spec:
+  
+  selector:
+    app: shopui-{{ .Values.environment }}
+
+  ports:
+  - port: {{ .Values.service.port }}

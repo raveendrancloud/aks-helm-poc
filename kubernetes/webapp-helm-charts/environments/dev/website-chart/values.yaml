@@ -1,3 +1,5 @@
+environment: dev
+
 namespace: default
 
 deployment:
