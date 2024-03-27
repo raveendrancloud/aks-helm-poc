@@ -20,7 +20,6 @@ jobs:
         ./get_helm.sh
         helm version
 
-
     - name: Add Bitnami Helm repository & Install MySQL
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
