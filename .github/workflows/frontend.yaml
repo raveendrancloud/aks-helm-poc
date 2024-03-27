@@ -3,7 +3,7 @@ name: Apply frontend Helm Chart to AKS
 on:
   push:
     paths:
-      - './kubernetes/webapp-helm-charts/envs/prod/website-chart/values.yaml'
+      - kubernetes/webapp-helm-charts/envs/prod/website-chart/values.yaml
   workflow_dispatch: # Manual trigger
 
 jobs:
