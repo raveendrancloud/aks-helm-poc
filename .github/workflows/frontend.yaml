@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v3
+
     - name: Set up kubectl
       uses: azure/k8s-set-context@v1
       with:
@@ -30,14 +32,11 @@ jobs:
     #     helm upgrade --install <release_name> <chart_directory> --namespace <namespace> -f values.yaml
 
     - name: LS
-      run: |
-        cd ./kubernetes/webapp-helm-charts/helm-charts
-        ls -la
+      run: ls -la
 
     - name: Check if Helm release exists
       id: check-helm-release
       run: |
-        cd ./kubernetes/webapp-helm-charts/helm-charts
         if helm list -n default | grep -q 'website'; then
           echo "::set-output name=release_exists::true"
         else
