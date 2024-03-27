@@ -6,7 +6,7 @@ database:
   host: mysql
   db_name: bookstore
   user: root
-  password: "a2FqbDNCdUptbA=="
+  password: "ZHUxMXpyUWxrVA=="
 
 deployment:
   replica_count: 1

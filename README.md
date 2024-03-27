@@ -46,6 +46,40 @@ Go to github workflows and run the workflow named **Apply MySQL and Ingress Cont
 
 ![MySQL and Nginx Ingress Controller Helm Charts](mysql-ingress-charts.png)
 
+### Note:
+
+Adminer is installed alongside the charts. adminer is a tool to administer databases, like mysql, via web interface.
+
+You can get the adminer public ip by locally executing (remember to be logged in to your aks cluster!):
+```
+kubectl get services
+```
+
+![Adminer service](adminer-service.png)
+
+![Adminer](adminer.png)
+
+
+## Get the mySQL database root password and place it in the correct backend helm chart value
+
+Locally execute (remember to be logged in to your aks cluster!):
+```
+kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}"
+```
+
+![MySQL base64 password](mysql-base64-password.png)
+
+**copy the value** and place it on kubernetes/webapp-helm-charts/envs/<choose-env>/shopapi-chart/values.yaml :
+
+![Update helm chart password](update-password.png)
+
+Push the change to github:
+```
+git add -A
+git commit -m 'updated mysql root user password at the shopapi helm chart values.yaml file'
+git push
+```
+
 
 ## Deploying the frontend helm chart
 
