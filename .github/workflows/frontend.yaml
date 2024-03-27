@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout to github repo
+      uses: actions/checkout@v3
 
     - name: Set up kubectl
       uses: azure/k8s-set-context@v1
@@ -26,14 +27,6 @@ jobs:
         ./get_helm.sh
         helm version
 
-    # - name: Apply Helm Chart
-    #   run: |
-    #     helm install website ./kubernetes/webapp-helm-charts/helm-charts/website-chart --values ./kubernetes/webapp-helm-charts/envs/prod/website-chart/values.yaml --wait
-    #     helm upgrade --install <release_name> <chart_directory> --namespace <namespace> -f values.yaml
-
-    - name: LS
-      run: ls -la
-
     - name: Check if Helm release exists
       id: check-helm-release
       run: |
@@ -42,21 +35,15 @@ jobs:
         else
           echo "::set-output name=release_exists::false"
         fi
-      env:
-        KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
 
     - name: Deploy with Helm
       if: steps.check-helm-release.outputs.release_exists == 'false'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm install website ./website-chart --values ../envs/prod/website-chart/values.yaml --wait
-      env:
-        KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
 
     - name: Upgrade with Helm
       if: steps.check-helm-release.outputs.release_exists == 'true'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm upgrade website ./website-chart --values ../envs/prod/website-chart/values.yaml --wait
-      env:
-        KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
