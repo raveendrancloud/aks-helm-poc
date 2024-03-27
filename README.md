@@ -1,5 +1,3 @@
-test
-
 # Sources
 
 - Kubernetes webapp source: https://github.com/devteds/demo-apps-on-k8s
@@ -12,6 +10,7 @@ This gig was inspired in the previously mentioned webapp, but helm charts were c
 <br/>
 
 # Steps to get AKS running & webapp deployed:
+
 
 ## Creating the AKS cluster and getting the login credentials in a .kube file
 
@@ -28,7 +27,8 @@ az aks get-credentials --resource-group aks-helm-poc --name aks --overwrite-exis
 
 ```
 
-## Putting the aks login credentials in the correct github secret
+
+## Putting the AKS cluster login credentials in the correct github secret
 
 Locally run: 
 ```
@@ -40,11 +40,15 @@ copy the output and place it inside the secret:
 ![AKS Login Secret](aks-login-secret.png)
 
 
-
-## Creating the MySQL and Ingress Controller in the AKS.
+## Applying MySQL and Nginx Ingress Controller Helm Charts to the AKS cluster
 
 Go to github workflows and run the workflow named **Apply MySQL and Ingress Controller Helm Charts** (mysql-ingress-charts.yaml)
 
-## Deploying the website
+![MySQL and Nginx Ingress Controller Helm Charts](mysql-ingress-charts.png)
 
-Run the workflow:
+
+## Deploying the frontend helm chart
+
+Run the workflow **Apply frontend Helm Chart to AKS** (frontend.yaml)
+
+![Frontend Helm Chart](frontend.png)

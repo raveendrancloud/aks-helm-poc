@@ -14,7 +14,12 @@ jobs:
         kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
     - name: Install Helm
-      uses: azure/setup-helm@v1
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+        helm version
+
 
     - name: Add Bitnami Helm repository & Install MySQL
       run: |
