@@ -29,6 +29,10 @@ jobs:
     #     helm install website ./kubernetes/webapp-helm-charts/helm-charts/website-chart --values ./kubernetes/webapp-helm-charts/envs/prod/website-chart/values.yaml --wait
     #     helm upgrade --install <release_name> <chart_directory> --namespace <namespace> -f values.yaml
 
+    - name: LS
+      run: |
+        ls -la
+
     - name: Check if Helm release exists
       id: check-helm-release
       run: |
