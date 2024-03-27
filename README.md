@@ -52,3 +52,10 @@ Go to github workflows and run the workflow named **Apply MySQL and Ingress Cont
 Run the workflow **Apply frontend Helm Chart to AKS** (frontend.yaml)
 
 ![Frontend Helm Chart](frontend.png)
+
+
+## Deploying the backend helm charts
+
+Run the workflow **Apply frontend Helm Chart to AKS** (frontend.yaml)
+
+![Frontend Helm Chart](frontend.png)

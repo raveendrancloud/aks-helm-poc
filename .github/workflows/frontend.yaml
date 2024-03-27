@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy Frontend Helm Chart
+    name: Apply frontend Helm Chart to AKS
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
         ./get_helm.sh
         helm version
 
-    - name: Check if Helm release exists
+    - name: Check if website Helm release exists
       id: check-helm-release
       run: |
         if helm list -n default | grep -q 'website'; then
@@ -36,13 +36,13 @@ jobs:
           echo "::set-output name=release_exists::false"
         fi
 
-    - name: Deploy with Helm
+    - name: Apply website with Helm
       if: steps.check-helm-release.outputs.release_exists == 'false'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm install website ./website-chart --values ../envs/prod/website-chart/values.yaml --wait
 
-    - name: Upgrade with Helm
+    - name: Upgrade website with Helm
       if: steps.check-helm-release.outputs.release_exists == 'true'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
