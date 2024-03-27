@@ -29,7 +29,7 @@ jobs:
         helm version
 
     - name: Check if shopapi Helm release exists
-      id: check-helm-release
+      id: check-helm-release-shopapi
       run: |
         if helm list -n default | grep -q 'shopapi'; then
           echo "::set-output name=shopapi_release_exists::true"
@@ -38,19 +38,19 @@ jobs:
         fi
 
     - name: Apply shopapi with Helm
-      if: steps.check-helm-release.outputs.shopapi_release_exists == 'false'
+      if: steps.check-helm-release-shopapi.outputs.shopapi_release_exists == 'false'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm install shopapi ./shopapi-chart --values ../envs/prod/shopapi-chart/values.yaml --wait
 
     - name: Upgrade shopapi with Helm
-      if: steps.check-helm-release.outputs.shopapi_release_exists == 'true'
+      if: steps.check-helm-release-shopapi.outputs.shopapi_release_exists == 'true'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm upgrade shopapi ./shopapi-chart --values ../envs/prod/shopapi-chart/values.yaml --wait
 
     - name: Check if shopui Helm release exists
-      id: check-helm-release
+      id: check-helm-release-shopui
       run: |
         if helm list -n default | grep -q 'shopui'; then
           echo "::set-output name=shopui_release_exists::true"
@@ -59,13 +59,13 @@ jobs:
         fi
 
     - name: Apply shopui with Helm
-      if: steps.check-helm-release.outputs.shopui_release_exists == 'false'
+      if: steps.check-helm-release-shopui.outputs.shopui_release_exists == 'false'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm install shopui ./shopui-chart --values ../envs/prod/shopui-chart/values.yaml --wait
 
     - name: Upgrade shopui with Helm
-      if: steps.check-helm-release.outputs.shopui_release_exists == 'true'
+      if: steps.check-helm-release-shopui.outputs.shopui_release_exists == 'true'
       run: |
         cd ./kubernetes/webapp-helm-charts/helm-charts
         helm upgrade shopui ./shopui-chart --values ../envs/prod/shopui-chart/values.yaml --wait
