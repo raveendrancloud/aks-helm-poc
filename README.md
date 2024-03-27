@@ -32,7 +32,7 @@ az aks get-credentials --resource-group aks-helm-poc --name aks --overwrite-exis
 
 Locally run: 
 ```
-cat ~/.kube/config | base64
+cat ~/.kube/config
 ```
 
 copy the output and place it inside the secret:
@@ -87,9 +87,13 @@ Run the workflow **Apply frontend Helm Chart to AKS** (frontend.yaml)
 
 ![Frontend Helm Chart](frontend.png)
 
+### Note: You can also update the files value.yaml and submit the changes to github. This will trigger a workflow that will apply/upgrade the helm chart.
+
 
 ## Deploying the backend helm charts
 
 Run the workflow **Apply backend Helm Charts to AKS** (backend.yaml)
 
-![Frontend Helm Chart](frontend.png)
+![Backend Helm Charts](backend.png)
+
+### Note: You can also update the files value.yaml and submit the changes to github. This will trigger a workflow that will apply/upgrade the helm charts.
