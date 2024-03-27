@@ -24,6 +24,18 @@ jobs:
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm install mysql bitnami/mysql --version 10.1.0 --set auth.database=bookstore
+    
+    - name: Checkout to github repo
+      uses: actions/checkout@v3
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        kubectl-version: 'latest'
+
+    - name: Apply adminer
+      run: |
+        kubectl apply -f kubernetes/adminer/adminer.yaml
 
     - name: Add NGINX Helm repository & Install NGINX Ingress Controller
       run: |

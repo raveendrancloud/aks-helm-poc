@@ -1,4 +1,4 @@
-name: Apply backend Helm Chart to AKS
+name: Apply backend Helm Charts to AKS
 
 on:
   push:

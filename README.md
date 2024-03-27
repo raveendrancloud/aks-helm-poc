@@ -56,6 +56,6 @@ Run the workflow **Apply frontend Helm Chart to AKS** (frontend.yaml)
 
 ## Deploying the backend helm charts
 
-Run the workflow **Apply frontend Helm Chart to AKS** (frontend.yaml)
+Run the workflow **Apply backend Helm Charts to AKS** (backend.yaml)
 
 ![Frontend Helm Chart](frontend.png)
