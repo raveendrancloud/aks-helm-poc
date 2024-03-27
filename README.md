@@ -59,6 +59,7 @@ kubectl get services
 
 ![Adminer](images/adminer.png)
 
+The server hostname is: **mysql.default.svc.cluster.local:3306**
 You can get the root user password by running:
 ```
 kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d
